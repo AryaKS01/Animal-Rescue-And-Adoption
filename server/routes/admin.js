@@ -67,7 +67,7 @@ router.post("/login", async (req, res) => {
         }
         // else {
         if (!result) {
-          console.log(30, "password didnot match");
+          console.log(30, "password did not match");
           res.status(400).json({ msg: "Invalid Username or Password" });
         }
 
