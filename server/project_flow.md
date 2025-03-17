@@ -1,5 +1,3 @@
-Let me break down the project structure and flow in detail:
-
 1. **Project Architecture**:
 
 - Follows MVC pattern with separate routes, models and utilities
