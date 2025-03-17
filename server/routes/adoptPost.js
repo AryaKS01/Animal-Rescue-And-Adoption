@@ -11,7 +11,7 @@ const router = express.Router();
 
 router.post("/post", verifyToken, async (req, res) => {
   // let user=null;
-  jwt.verify(req.token, "shhh", async (err, dataa) => {
+  jwt.verify(req.token, process.env.JWT_SECRET, async (err, dataa) => {
     if (err) {
       res.status(403);
     }
@@ -52,9 +52,11 @@ router.post("/post", verifyToken, async (req, res) => {
 
 router.get("/getallpost", async (req, res) => {
   try {
-    const allposts = await Post.find({ adopted: false }).sort({ timestamp: -1 });
+    const allposts = await Post.find({ adopted: false }).sort({
+      timestamp: -1,
+    });
     setTimeout(() => {
-    res.status(200).json(allposts);
+      res.status(200).json(allposts);
     }, 1000);
   } catch (error) {
     res.status(400).json(error);
@@ -65,7 +67,7 @@ router.get("/getpost/:id", async (req, res) => {
   try {
     const posts = await Post.findOne({ _id: req.params.id });
     setTimeout(() => {
-    res.status(200).json(posts);
+      res.status(200).json(posts);
     }, 1000);
   } catch (error) {
     res.status(400).json(error);
@@ -79,7 +81,7 @@ router.get("/filter", async (req, res, next) => {
       address: { $regex: `${query}`, $options: "i" },
     }).sort({ timestamp: -1 });
     setTimeout(() => {
-    res.status(200).json(posts);
+      res.status(200).json(posts);
     }, 1000);
   } catch (error) {
     next(error);
@@ -88,7 +90,7 @@ router.get("/filter", async (req, res, next) => {
 
 router.get("/markAdopt/:id", verifyToken, async (req, res) => {
   try {
-    jwt.verify(req.token, "shhh", async (err, dataa) => {
+    jwt.verify(req.token, process.env.JWT_SECRET, async (err, dataa) => {
       if (dataa === undefined) {
         console.log("token expired");
         res.status(200).json({ message: "Login Session Expired" });
@@ -104,7 +106,7 @@ router.get("/markAdopt/:id", verifyToken, async (req, res) => {
         // console.log(result);
         setTimeout(() => {
           res.status(200).json({ msg: "Vet Adopted" });
-        }, 1000)
+        }, 1000);
       }
     });
   } catch (err) {
@@ -115,7 +117,7 @@ router.get("/markAdopt/:id", verifyToken, async (req, res) => {
 
 router.post("/adoptionRequest", verifyToken, (req, res) => {
   try {
-    jwt.verify(req.token, "shhh", async (err, data) => {
+    jwt.verify(req.token, process.env.JWT_SECRET, async (err, data) => {
       if (err) {
         res.status(403);
       }

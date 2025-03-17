@@ -3,11 +3,12 @@ const env = require("dotenv");
 env.config();
 
 const mailTransporter = nodemailer.createTransport({
-  service: "gmail",
+  host: "smtp.gmail.com",
+  port: 587,
+  secure: false, // Use true for port 465, false for all other ports
   auth: {
-    user: "AdoPet2024@gmail.com",
-    pass: process.env.MAIL_PASSWORD,
-  },
+    user: process.env.EMAIL_USER, // Use environment variables for sensitive data
+    pass: process.env.EMAIL_PASS,
+  }, // Show debug output
 });
-
-module.exports = mailTransporter
+module.exports = mailTransporter;

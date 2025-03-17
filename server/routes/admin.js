@@ -77,12 +77,17 @@ router.post("/login", async (req, res) => {
           id: logged_user.id,
         };
 
-        jwt.sign(payload, "shhh", { expiresIn: "10h" }, (err, token) => {
-          res.status(200).json({
-            token: token,
-            Message: "Login successful",
-          });
-        });
+        jwt.sign(
+          payload,
+          process.env.JWT_SECRET,
+          { expiresIn: "10h" },
+          (err, token) => {
+            res.status(200).json({
+              token: token,
+              Message: "Login successful",
+            });
+          }
+        );
       });
     } else {
       console.log(4, "user not found");
@@ -96,7 +101,7 @@ router.post("/login", async (req, res) => {
 
 router.get("/dashboard", verifyToken, (req, res) => {
   try {
-    jwt.verify(req.token, "shhh", async (err, data) => {
+    jwt.verify(req.token, process.env.JWT_SECRET, async (err, data) => {
       if (data == undefined) {
         console.log("token expired");
         res.status(200).json({ message: "Login Session Expired" });
@@ -128,7 +133,7 @@ router.get("/dashboard", verifyToken, (req, res) => {
             adopt_list: adopt_list,
             rescue_list: rescue_list,
           });
-        }, 2500)
+        }, 2500);
       }
     });
   } catch (err) {
@@ -139,7 +144,7 @@ router.get("/dashboard", verifyToken, (req, res) => {
 
 router.get("/allUser", verifyToken, (req, res) => {
   try {
-    jwt.verify(req.token, "shhh", async (err, data) => {
+    jwt.verify(req.token, process.env.JWT_SECRET, async (err, data) => {
       if (data == undefined) {
         // console.log("token expired");
         res.status(201).json({ message: "Login Session Expired" });
@@ -151,7 +156,7 @@ router.get("/allUser", verifyToken, (req, res) => {
         const allUser = await User.find().sort({ timestamp: -1 });
         setTimeout(() => {
           res.status(200).json({ allUser: allUser });
-        }, 3000)
+        }, 3000);
       }
     });
   } catch (err) {
@@ -162,7 +167,7 @@ router.get("/allUser", verifyToken, (req, res) => {
 
 router.get("/allUserMap", verifyToken, (req, res) => {
   try {
-    jwt.verify(req.token, "shhh", async (err, data) => {
+    jwt.verify(req.token, process.env.JWT_SECRET, async (err, data) => {
       if (data == undefined) {
         // console.log("token expired");
         res.status(201).json({ message: "Login Session Expired" });
@@ -171,10 +176,18 @@ router.get("/allUserMap", verifyToken, (req, res) => {
           console.log(err);
         }
 
-        const allUser = await User.find({ loc: { $exists: true } }, { name: 1, is_volunteer: 1, latLng: '$loc.coordinates', user_region: { $arrayElemAt: [{ $split: ['$address', ','] }, -2] } })
+        const allUser = await User.find(
+          { loc: { $exists: true } },
+          {
+            name: 1,
+            is_volunteer: 1,
+            latLng: "$loc.coordinates",
+            user_region: { $arrayElemAt: [{ $split: ["$address", ","] }, -2] },
+          }
+        );
         setTimeout(() => {
           res.status(200).json(allUser);
-        }, 1000)
+        }, 1000);
       }
     });
   } catch (err) {
@@ -185,7 +198,7 @@ router.get("/allUserMap", verifyToken, (req, res) => {
 
 router.get("/filterUsers", verifyToken, (req, res) => {
   try {
-    jwt.verify(req.token, "shhh", async (err, data) => {
+    jwt.verify(req.token, process.env.JWT_SECRET, async (err, data) => {
       if (data == undefined) {
         // console.log("token expired");
         res.status(201).json({ message: "Login Session Expired" });
@@ -203,7 +216,7 @@ router.get("/filterUsers", verifyToken, (req, res) => {
         res.status(200).json({ users, usersCount });
         // }, 3000);
       }
-    })
+    });
   } catch (error) {
     console.log(err);
     res.status(400).json("Unexpected Error Occured");
@@ -212,7 +225,7 @@ router.get("/filterUsers", verifyToken, (req, res) => {
 
 router.get("/allAdoptPost", verifyToken, async (req, res) => {
   try {
-    jwt.verify(req.token, "shhh", async (err, data) => {
+    jwt.verify(req.token, process.env.JWT_SECRET, async (err, data) => {
       if (data == undefined) {
         // console.log("token expired");
         res.status(201).json({ message: "Login Session Expired" });
@@ -224,7 +237,7 @@ router.get("/allAdoptPost", verifyToken, async (req, res) => {
         const allAdoptPost = await AdoptPost.find().sort({ timestamp: -1 });
         setTimeout(() => {
           res.status(200).json({ allAdoptPost: allAdoptPost });
-        }, 3000)
+        }, 3000);
       }
     });
   } catch (err) {
@@ -235,7 +248,7 @@ router.get("/allAdoptPost", verifyToken, async (req, res) => {
 
 router.get("/restrictAdoptPost/:id", verifyToken, async (req, res) => {
   try {
-    jwt.verify(req.token, "shhh", async (err, data) => {
+    jwt.verify(req.token, process.env.JWT_SECRET, async (err, data) => {
       if (data == undefined) {
         // console.log("token expired");
         res.status(201).json({ message: "Login Session Expired" });
@@ -249,7 +262,7 @@ router.get("/restrictAdoptPost/:id", verifyToken, async (req, res) => {
           { restrict: true }
         );
 
-        res.status(200).json({ message: "Post Restricted"})
+        res.status(200).json({ message: "Post Restricted" });
       }
     });
   } catch (err) {
@@ -260,7 +273,7 @@ router.get("/restrictAdoptPost/:id", verifyToken, async (req, res) => {
 
 router.get("/allRescuePost", verifyToken, async (req, res) => {
   try {
-    jwt.verify(req.token, "shhh", async (err, data) => {
+    jwt.verify(req.token, process.env.JWT_SECRET, async (err, data) => {
       if (data == undefined) {
         // console.log("token expired");
         res.status(201).json({ message: "Login Session Expired" });
@@ -272,7 +285,7 @@ router.get("/allRescuePost", verifyToken, async (req, res) => {
         const allRescuePost = await RescuePost.find().sort({ timestamp: -1 });
         setTimeout(() => {
           res.status(200).json({ allRescuePost: allRescuePost });
-        }, 3000)
+        }, 3000);
       }
     });
   } catch (err) {
@@ -283,7 +296,7 @@ router.get("/allRescuePost", verifyToken, async (req, res) => {
 
 router.get("/restrictResctictPost/:id", verifyToken, async (req, res) => {
   try {
-    jwt.verify(req.token, "shhh", async (err, data) => {
+    jwt.verify(req.token, process.env.JWT_SECRET, async (err, data) => {
       if (data == undefined) {
         // console.log("token expired");
         res.status(201).json({ message: "Login Session Expired" });
@@ -297,7 +310,7 @@ router.get("/restrictResctictPost/:id", verifyToken, async (req, res) => {
           { restrict: true }
         );
 
-        res.status(200).json({ message: "Post Restricted "});
+        res.status(200).json({ message: "Post Restricted " });
       }
     });
   } catch (err) {
@@ -308,7 +321,7 @@ router.get("/restrictResctictPost/:id", verifyToken, async (req, res) => {
 
 router.delete("/deleteUser/:id", verifyToken, (req, res) => {
   try {
-    jwt.verify(req.token, "shhh", async (err, dataa) => {
+    jwt.verify(req.token, process.env.JWT_SECRET, async (err, dataa) => {
       if (dataa === undefined) {
         res.status(200).json({ message: "Login Session Expired" });
       } else {
@@ -351,7 +364,7 @@ router.delete("/deleteUser/:id", verifyToken, (req, res) => {
 
 router.delete("/deleteAdoptPost/:id", verifyToken, async (req, res) => {
   try {
-    jwt.verify(req.token, "shhh", async (err, dataa) => {
+    jwt.verify(req.token, process.env.JWT_SECRET, async (err, dataa) => {
       if (dataa === undefined) {
         res.status(200).json({ message: "Login Session Expired" });
       } else {
@@ -395,7 +408,7 @@ router.delete("/deleteAdoptPost/:id", verifyToken, async (req, res) => {
 
 router.delete("/deleteRescuePost/:id", verifyToken, async (req, res) => {
   try {
-    jwt.verify(req.token, "shhh", async (err, dataa) => {
+    jwt.verify(req.token, process.env.JWT_SECRET, async (err, dataa) => {
       if (dataa === undefined) {
         res.status(200).json({ message: "Login Session Expired" });
       } else {
@@ -438,7 +451,7 @@ router.delete("/deleteRescuePost/:id", verifyToken, async (req, res) => {
 
 router.get("/filterAdoptPosts", verifyToken, (req, res) => {
   try {
-    jwt.verify(req.token, "shhh", async (err, data) => {
+    jwt.verify(req.token, process.env.JWT_SECRET, async (err, data) => {
       if (data == undefined) {
         // console.log("token expired");
         res.status(201).json({ message: "Login Session Expired" });
@@ -448,13 +461,15 @@ router.get("/filterAdoptPosts", verifyToken, (req, res) => {
         }
 
         const query = req.query.search;
-        const posts = await AdoptPost.find({ address: { $regex: `${query}`, $options: "i" } }).sort({ timestamp: -1 });
+        const posts = await AdoptPost.find({
+          address: { $regex: `${query}`, $options: "i" },
+        }).sort({ timestamp: -1 });
         const postsCount = posts.length;
         // setTimeout(() => {
         res.status(200).json({ posts, postsCount });
         // }, 3000);
       }
-    })
+    });
   } catch (error) {
     console.log(err);
     res.status(400).json("Unexpected Error Occured");
@@ -463,7 +478,7 @@ router.get("/filterAdoptPosts", verifyToken, (req, res) => {
 
 router.get("/filterRescuePosts", verifyToken, (req, res) => {
   try {
-    jwt.verify(req.token, "shhh", async (err, data) => {
+    jwt.verify(req.token, process.env.JWT_SECRET, async (err, data) => {
       if (data == undefined) {
         // console.log("token expired");
         res.status(201).json({ message: "Login Session Expired" });
@@ -481,13 +496,11 @@ router.get("/filterRescuePosts", verifyToken, (req, res) => {
         res.status(200).json({ posts, postsCount });
         // }, 3000);
       }
-    })
+    });
   } catch (error) {
     console.log(err);
     res.status(400).json("Unexpected Error Occured");
   }
 });
-
-
 
 module.exports = router;

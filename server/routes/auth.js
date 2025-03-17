@@ -115,12 +115,17 @@ router.post("/login", async (req, res) => {
           id: logged_user.id,
         };
 
-        jwt.sign(payload, "shhh", { expiresIn: "10h" }, (err, token) => {
-          res.status(200).json({
-            token: token,
-            Message: "Login successful",
-          });
-        });
+        jwt.sign(
+          payload,
+          process.env.JWT_SECRET,
+          { expiresIn: "10h" },
+          (err, token) => {
+            res.status(200).json({
+              token: token,
+              Message: "Login successful",
+            });
+          }
+        );
       });
     } else {
       console.log(4, "user not found");
@@ -155,12 +160,17 @@ router.post("/googleLogin", async (req, res) => {
       id: user._id,
     };
 
-    jwt.sign(payload, "shhh", { expiresIn: "10h" }, (err, token) => {
-      res.status(200).json({
-        token: token,
-        message: "Login Successfull",
-      });
-    });
+    jwt.sign(
+      payload,
+      process.env.JWT_SECRET,
+      { expiresIn: "10h" },
+      (err, token) => {
+        res.status(200).json({
+          token: token,
+          message: "Login Successfull",
+        });
+      }
+    );
     console.log("logged in");
   } catch (err) {
     console.log("googleLogin failed");
@@ -180,7 +190,7 @@ router.post("/forgot-password", async (req, res) => {
     }
 
     // Generate a unique JWT token for the user that contains the user's id
-    const token = jwt.sign({ userId: user._id }, "shhh", {
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
       expiresIn: "10m",
     });
 
@@ -212,7 +222,7 @@ router.post("/reset-password/:token", async (req, res) => {
   try {
     console.log("inside resetpassword");
     // Verify the token sent by the user
-    const decodedToken = jwt.verify(req.params.token, "shhh");
+    const decodedToken = jwt.verify(req.params.token, process.env.JWT_SECRET);
 
     // If the token is invalid, return an error
     if (!decodedToken) {
@@ -241,7 +251,7 @@ router.post("/reset-password/:token", async (req, res) => {
 
 router.get("/validateUser", verifyToken, async (req, res) => {
   try {
-    jwt.verify(req.token, "shhh", (err, data) => {
+    jwt.verify(req.token, process.env.JWT_SECRET, (err, data) => {
       if (!data)
         res.status(400).json({ msg: "Invalid Token", verified: false });
       else {

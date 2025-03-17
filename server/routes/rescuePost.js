@@ -12,7 +12,7 @@ const router = express.Router();
 
 router.post("/post", verifyToken, async (req, res) => {
   try {
-    jwt.verify(req.token, "shhh", async (err, dataa) => {
+    jwt.verify(req.token, process.env.JWT_SECRET, async (err, dataa) => {
       if (err) {
         res.status(403);
       }
@@ -125,7 +125,7 @@ router.post("/post", verifyToken, async (req, res) => {
 
 router.get("/markRescue/:id", verifyToken, async (req, res) => {
   try {
-    jwt.verify(req.token, "shhh", async (err, dataa) => {
+    jwt.verify(req.token, process.env.JWT_SECRET, async (err, dataa) => {
       if (dataa === undefined) {
         console.log("token expired");
         res.status(200).json({ message: "Login Session Expired" });
@@ -140,8 +140,8 @@ router.get("/markRescue/:id", verifyToken, async (req, res) => {
         );
         // console.log(result);
         setTimeout(() => {
-          res.status(200).json({msg: "Vet Rescued"});
-        },1000)
+          res.status(200).json({ msg: "Vet Rescued" });
+        }, 1000);
       }
     });
   } catch (err) {
@@ -152,9 +152,11 @@ router.get("/markRescue/:id", verifyToken, async (req, res) => {
 
 router.get("/getallrescues", async (req, res, next) => {
   try {
-    const allposts = await Rescue.find({ rescued: false }).sort({ timestamp: -1 });
+    const allposts = await Rescue.find({ rescued: false }).sort({
+      timestamp: -1,
+    });
     setTimeout(() => {
-    res.status(200).json(allposts);
+      res.status(200).json(allposts);
     }, 1000);
   } catch (error) {
     res.status(400).json(error);
@@ -190,14 +192,14 @@ router.get("/filter", async (req, res, next) => {
 
 router.post("/rescueRequest", verifyToken, async (req, res) => {
   try {
-    jwt.verify(req.token, "shhh", async (err, data) => {
+    jwt.verify(req.token, process.env.JWT_SECRET, async (err, data) => {
       if (err) {
         res.status(403);
       }
       console.log(1, req.body);
 
       const currentUser = await User.findOne({ _id: data.id });
-      console.log(11, currentUser);  //gives null
+      console.log(11, currentUser); //gives null
 
       var resData = await Rescue.findOne({ _id: req.body.id });
       const recieverEmail = resData.rescuer_email;

@@ -1,5 +1,5 @@
 function adoptReqMail(resData) {
-    return `<!doctype html>
+  return `<!doctype html>
 <html>
 
 <head>
@@ -450,4 +450,4 @@ function adoptReqMail(resData) {
 </html>`;
 }
 
-module.exports = adoptReqMail
+module.exports = adoptReqMail;

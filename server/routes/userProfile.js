@@ -19,7 +19,7 @@ cloudinary.config({
 
 router.get("/getuser", verifyToken, (req, res) => {
   try {
-    jwt.verify(req.token, "shhh", async (err, dataa) => {
+    jwt.verify(req.token, process.env.JWT_SECRET, async (err, dataa) => {
       if (dataa === undefined) {
         console.log("token expired");
         res.status(200).json({ message: "Login Session Expired" });
@@ -44,7 +44,9 @@ router.get("/getuser", verifyToken, (req, res) => {
             rescuer_email: user.email,
           });
 
-          res.status(200).json({ user: user, adopt: alladoptPosts, rescue: allRescuePosts });
+          res
+            .status(200)
+            .json({ user: user, adopt: alladoptPosts, rescue: allRescuePosts });
         }
       }
     });
@@ -56,7 +58,7 @@ router.get("/getuser", verifyToken, (req, res) => {
 
 router.patch("/edit", verifyToken, (req, res) => {
   try {
-    jwt.verify(req.token, "shhh", async (err, dataa) => {
+    jwt.verify(req.token, process.env.JWT_SECRET, async (err, dataa) => {
       if (dataa === undefined) {
         res.status(200).json({ message: "Login Session Expired" });
         console.log("token expired");
@@ -113,9 +115,9 @@ router.patch("/edit", verifyToken, (req, res) => {
   }
 });
 
-router.post("/updateProfilePic", verifyToken, async(req,res)=>{
+router.post("/updateProfilePic", verifyToken, async (req, res) => {
   try {
-    jwt.verify(req.token, "shhh", async (err, dataa) => {
+    jwt.verify(req.token, process.env.JWT_SECRET, async (err, dataa) => {
       if (dataa === undefined) {
         res.status(200).json({ message: "Login Session Expired" });
         console.log("token expired");
@@ -148,8 +150,10 @@ router.post("/updateProfilePic", verifyToken, async(req,res)=>{
           return res.send({ error: "error" });
         }
 
-        
-        const result = await User.findByIdAndUpdate({ _id: user._id }, { image: req.body.image, ImageID: req.body.image_id });
+        const result = await User.findByIdAndUpdate(
+          { _id: user._id },
+          { image: req.body.image, ImageID: req.body.image_id }
+        );
         // console.log(result);
 
         res.status(200).json({ message: "Image Updated Successfully" });
@@ -159,11 +163,11 @@ router.post("/updateProfilePic", verifyToken, async(req,res)=>{
     console.log(err);
     res.status(400).json(err);
   }
-})
+});
 
 router.delete("/deleteUser", verifyToken, (req, res) => {
   try {
-    jwt.verify(req.token, "shhh", async (err, dataa) => {
+    jwt.verify(req.token, process.env.JWT_SECRET, async (err, dataa) => {
       if (dataa === undefined) {
         res.status(200).json({ message: "Login Session Expired" });
       } else {
@@ -194,7 +198,7 @@ router.delete("/deleteUser", verifyToken, (req, res) => {
         const data = await User.findByIdAndDelete(user._id);
         console.log(data);
         // setTimeout(() => {
-          res.status(200).json({ msg: "Account deleted successfully" });
+        res.status(200).json({ msg: "Account deleted successfully" });
         // }, 500);
       }
     });
@@ -250,8 +254,8 @@ router.delete("/deleteAdoptPost/:id", verifyToken, async (req, res) => {
 
 router.delete("/deleteRescuePost/:id", verifyToken, async (req, res) => {
   try {
-    jwt.verify(req.token, "shhh", async (err, dataa) => {
-      if (dataa === undefined) {
+    jwt.verify(req.token, process.env.JWT_SECRET, async (err, data) => {
+      if (data === undefined) {
         res.status(200).json({ message: "Login Session Expired" });
       } else {
         if (err) {
