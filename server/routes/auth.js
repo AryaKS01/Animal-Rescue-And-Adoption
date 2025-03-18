@@ -14,7 +14,6 @@ const sendMail = (data) => {
   let mailDetails = {
     from: "AdoPet2025@gmail.com",
     to: data.email,
-    // to: "123sayantandas@gmail.com",
     subject: "Welcome to Adopet! Your Registration is Complete! 🐾",
     html: regnSuccessMail(data.name),
   };
@@ -61,7 +60,6 @@ router.post("/register", async (req, res) => {
             let mailDetails = {
               from: "AdoPet2025@gmail.com",
               to: data.email,
-              // to: "123sayantandas@gmail.com",
               subject: "Welcome to Adopet! Your Registration is Complete! 🐾",
               html: regnSuccessMail(data.name),
             };
@@ -199,7 +197,6 @@ router.post("/forgot-password", async (req, res) => {
     let mailDetails = {
       from: "AdoPet2025@gmail.com",
       to: user.email,
-      // to: "123sayantandas@gmail.com",
       subject: "Reset Your Password",
       html: resetPasswordMail(resData),
     };

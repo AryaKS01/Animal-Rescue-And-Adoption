@@ -55,7 +55,6 @@ router.post("/post", verifyToken, async (req, res) => {
           console.log(nearbyvolunteer);
 
           nearbyvolunteer.map((vol) => {
-            // console.log(result.id, vol.name)
             let mailDetails = {
               from: "AdoPet2025@gmail.com",
               to: vol.email,
@@ -215,8 +214,6 @@ router.post("/rescueRequest", verifyToken, async (req, res) => {
       let mailDetails = {
         from: "AdoPet2025@gmail.com",
         to: currentUser.email,
-        // to: "dsnehodipto@gmail.com",
-        // to: "123sayantandas@gmail.com",
         subject: "Thanks For Rescue",
         html: rescueConfirmMail(resData),
       };
@@ -233,8 +230,6 @@ router.post("/rescueRequest", verifyToken, async (req, res) => {
       mailDetails = {
         from: "AdoPet2025@gmail.com",
         to: recieverEmail,
-        // to: "dsnehodipto@gmail.com",
-        // to: "123sayantandas@gmail.com",
         subject: "Request For Rescue Granted",
         html: rescueConfirmMailForDonor(resData),
       };
