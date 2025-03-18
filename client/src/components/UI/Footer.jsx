@@ -82,13 +82,15 @@ const Footer = () => {
                 <div className="col-6 column">
                   <h3>Contact Info</h3>
                   <ul className="footer-contact-list">
-                    <li className="">10001, 5th Avenue, Kolkata, West Bengal, India</li>
+                    <li className="">
+                      10001, 5th Avenue, Kolkata, West Bengal, India
+                    </li>
                     <li className="mt-2">
                       <Link href="tel:+12 23456790">+(91) 945 658 3214</Link>
                     </li>
                     <li className="mt-2">
-                      <Link to={`mailto:AdoPet2024@gmail.com`}>
-                        adopet2024@gmail.com
+                      <Link to={`mailto:AdoPet2025@gmail.com`}>
+                        AdoPet2025@gmail.com
                       </Link>
                     </li>
                     <li className="mt-2">

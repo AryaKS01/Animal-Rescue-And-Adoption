@@ -1,22 +1,22 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import ContactUsForm from '../components/ContactUsForm';
-import { toast } from 'react-toastify';
-import Alert from '../components/UI/Alert';
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import ContactUsForm from "../components/ContactUsForm";
+import { toast } from "react-toastify";
+import Alert from "../components/UI/Alert";
 
 function ContactUs() {
-  const [errors, setErrors] = useState()
+  const [errors, setErrors] = useState();
 
   const openMailHandler = (contactMailData) => {
     try {
-      window.location.href = `mailto:AdoPet2024@gmail.com?subject=${contactMailData.subject}&body=I am ${contactMailData.username}, ${contactMailData.body}`;
-      console.log(contactMailData)
+      window.location.href = `mailto:AdoPet2025@gmail.com?subject=${contactMailData.subject}&body=I am ${contactMailData.username}, ${contactMailData.body}`;
+      console.log(contactMailData);
     } catch (err) {
       toast.error(err[0]);
       setErrors(err || {});
-      console.error(err)
+      console.error(err);
     }
-  }
+  };
 
   return (
     <>

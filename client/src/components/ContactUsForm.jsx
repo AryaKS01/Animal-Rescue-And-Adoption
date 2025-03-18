@@ -101,7 +101,7 @@ const ContactUsForm = ({ onSubmit }) => {
             Submit
           </button>
           {/* <Link
-            to={`mailto:AdoPet2024@gmail.com?subject=${subject}&body=I am ${name}, ${body}`}
+            to={`mailto:AdoPet2025@gmail.com?subject=${subject}&body=I am ${name}, ${body}`}
           >
             <div className="btn btn-style btn-primary">Submit</div>
           </Link> */}

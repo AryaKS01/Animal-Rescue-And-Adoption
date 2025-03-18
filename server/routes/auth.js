@@ -12,7 +12,7 @@ const router = express.Router();
 
 const sendMail = (data) => {
   let mailDetails = {
-    from: "AdoPet2024@gmail.com",
+    from: "AdoPet2025@gmail.com",
     to: data.email,
     // to: "123sayantandas@gmail.com",
     subject: "Welcome to Adopet! Your Registration is Complete! 🐾",
@@ -59,7 +59,7 @@ router.post("/register", async (req, res) => {
           .save()
           .then((result) => {
             let mailDetails = {
-              from: "AdoPet2024@gmail.com",
+              from: "AdoPet2025@gmail.com",
               to: data.email,
               // to: "123sayantandas@gmail.com",
               subject: "Welcome to Adopet! Your Registration is Complete! 🐾",
@@ -197,7 +197,7 @@ router.post("/forgot-password", async (req, res) => {
     const resData = { token: token };
 
     let mailDetails = {
-      from: "AdoPet2024@gmail.com",
+      from: "AdoPet2025@gmail.com",
       to: user.email,
       // to: "123sayantandas@gmail.com",
       subject: "Reset Your Password",

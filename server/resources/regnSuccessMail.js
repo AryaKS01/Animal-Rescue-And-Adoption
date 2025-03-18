@@ -1,5 +1,5 @@
 function regnSuccessMail(username) {
-    return `
+  return `
     <!doctype html>
 <html>
 
@@ -317,9 +317,9 @@ function regnSuccessMail(username) {
                                         <hr width="100%" size="3px" color="#aaa" style="margin-block: 1.5rem;" />
                                         <p
                                             style="margin-top: 2rem !important; font-size: 1.5rem; font-weight: 500; line-height: 1.5rem;">
-                                            To know more contact us at <a href="mailto:adoPet2024@gmail.com"
+                                            To know more contact us at <a href="mailto:AdoPet2025@gmail.com"
                                                 target="_blank"
-                                                style="font-weight: 400;color: blue;text-decoration: none;">adoPet2024@gmail.com</a><br>
+                                                style="font-weight: 400;color: blue;text-decoration: none;">AdoPet2025@gmail.com</a><br>
 
                                             <br><br><br>
                                             with Regards,<br>
@@ -360,4 +360,4 @@ function regnSuccessMail(username) {
     `;
 }
 
-module.exports = regnSuccessMail
+module.exports = regnSuccessMail;

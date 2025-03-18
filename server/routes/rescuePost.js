@@ -57,7 +57,7 @@ router.post("/post", verifyToken, async (req, res) => {
           nearbyvolunteer.map((vol) => {
             // console.log(result.id, vol.name)
             let mailDetails = {
-              from: "AdoPet2024@gmail.com",
+              from: "AdoPet2025@gmail.com",
               to: vol.email,
               subject:
                 "Request for Animal Rescue: Injured Animal in Your Locality",
@@ -103,7 +103,7 @@ router.post("/post", verifyToken, async (req, res) => {
 //   // res.send(nearbyvolunteer);
 
 //   let mailDetails = {
-//     from: "AdoPet2024@gmail.com",
+//     from: "AdoPet2025@gmail.com",
 //     // from: "dsnehodipto@gmail.com",
 //     // to: recieverEmail,
 //     // to: "dsnehodipto@gmail.com",
@@ -213,7 +213,7 @@ router.post("/rescueRequest", verifyToken, async (req, res) => {
 
       //Mail goes to Sender
       let mailDetails = {
-        from: "AdoPet2024@gmail.com",
+        from: "AdoPet2025@gmail.com",
         to: currentUser.email,
         // to: "dsnehodipto@gmail.com",
         // to: "123sayantandas@gmail.com",
@@ -231,7 +231,7 @@ router.post("/rescueRequest", verifyToken, async (req, res) => {
 
       //Mail goes to donor
       mailDetails = {
-        from: "AdoPet2024@gmail.com",
+        from: "AdoPet2025@gmail.com",
         to: recieverEmail,
         // to: "dsnehodipto@gmail.com",
         // to: "123sayantandas@gmail.com",
