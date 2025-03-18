@@ -4,8 +4,8 @@
   "description": "This website helps you to adopt and rescue animals that needs your help.",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": ""
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
@@ -25,5 +25,8 @@
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0",
     "passport-local": "^1.0.0"
+  },
+  "devDependencies": {
+    "@vercel/node": "^5.1.14"
   }
 }
