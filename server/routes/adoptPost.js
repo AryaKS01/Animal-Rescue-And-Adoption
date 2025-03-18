@@ -137,7 +137,7 @@ router.post("/adoptionRequest", verifyToken, (req, res) => {
       console.log(resData);
 
       let mailDetails = {
-        from: "AdoPet2024@gmail.com",
+        from: "AdoPet2025@gmail.com",
         to: recieverEmail,
         subject: "Request for adoption",
         html: adoptReqMail(resData),
