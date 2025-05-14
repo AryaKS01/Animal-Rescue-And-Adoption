@@ -776,3 +776,32 @@ class Mage_Admin_Model_User extends Mage_Core_Model_Abstract
         return ($minLength < $absoluteMinLength) ? $absoluteMinLength : $minLength;
     }
 }
+On a Maker-checker Qwikserve site, when the approver account is blocked, no error message is displayed.
+Login API giving empty response (unable to login)
+
+
+Projects
+B2B
+
+Add parent
+
+B2B-24285
+
+
+QwikServe-Login page || Approver login error message ||
+
+Add
+
+Apps
+General
+Dates
+Implementation
+Validation
+Description
+
+On a Maker-checker Qwikserve site, when the approver account is blocked, no error message is displayed. Kindly review and fix ASAP
+
+ Login API giving empty response (unable to login)
+ 
+
+If the Approver Account is blocked, then No error message is displayed on the UI.
