@@ -26,3 +26,5 @@ jQuery(document).ready(function(){
     return false;
   });
 });
+console.log("✅ ticket‐save override script loaded, looking for button…");
+console.log("Selector match count:", jQuery(".scalable.save[title='Save Role']").length);
