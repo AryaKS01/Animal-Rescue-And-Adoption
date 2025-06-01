@@ -1,39 +1,51 @@
 <script type="text/javascript">
 //<![CDATA[
 document.observe('dom:loaded', function() {
-    var form = $('role_edit_form');
-    if (!form) return;
+    // find the “Save Role” button
+    var saveBtn = $$('.scalable.save[title="Save Role"]')[0];
+    if (!saveBtn) {
+        return;
+    }
 
-    // Attach a “submit” observer instead of overriding submit():
-    form.stopObserving('submit');
+    // remove Magento’s default click handler (roleForm.submit)
+    saveBtn.stopObserving('click');
 
-    form.observe('submit', function(event) {
-        var enabled = $('enabled_ticket_id') ? $F('enabled_ticket_id') : '0';
-        if (enabled === '1') {
-            var existingTid = $('ticket_id') ? $F('ticket_id') : '';
-            if (!existingTid) {
-                var tid = prompt('Please enter ticket id');
-                if (!tid) {
-                    // Cancelled → prevent the form from submitting
-                    event.stop();
-                    return false;
-                }
-                // Inject hidden field if missing
-                if (!$('ticket_id')) {
-                    var fld = new Element('input', {
-                        type:  'hidden',
-                        id:    'ticket_id',
-                        name:  'ticket_id',
-                        value: tid
-                    });
-                    form.insert({ bottom: fld });
-                } else {
-                    $('ticket_id').value = tid;
-                }
+    // add our own click handler
+    saveBtn.observe('click', function(event) {
+        // if ticket IDs are disabled, submit normally
+        if ($('enabled_ticket_id') && $F('enabled_ticket_id') !== '1') {
+            $('role_edit_form').submit();
+            event.stop();
+            return false;
+        }
+
+        // if there’s no ticket_id yet, prompt for it
+        var existingTid = $('ticket_id') ? $F('ticket_id') : '';
+        if (!existingTid) {
+            var tid = prompt('Please enter ticket id');
+            if (!tid) {
+                // user cancelled or left blank → do nothing
+                event.stop();
+                return false;
+            }
+            // inject the hidden ticket_id field if missing
+            if (!$('ticket_id')) {
+                var hiddenField = new Element('input', {
+                    type:  'hidden',
+                    id:    'ticket_id',
+                    name:  'ticket_id',
+                    value: tid
+                });
+                $('role_edit_form').insert({ bottom: hiddenField });
+            } else {
+                $('ticket_id').value = tid;
             }
         }
-        // If ticket_id is set or ticketing is disabled, let the form continue:
-        // (Prototype’s varienForm.validate() will run because Mage’s onclick calls roleForm.submit())
+
+        // submit the form natively (bypass Prototype validation)
+        $('role_edit_form').submit();
+        event.stop();
+        return false;
     });
 });
 //]]>
