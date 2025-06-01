@@ -1,7 +1,7 @@
 <script type="text/javascript">
 //<![CDATA[
 document.observe('dom:loaded', function() {
-    // 1) Grab exactly the “Save Role” button by title + class
+    // 1) Grab exactly the “Save Role” button by its title + class
     var saveBtn = $$('.scalable.save[title="Save Role"]')[0];
     if (!saveBtn) {
         return;
@@ -10,25 +10,29 @@ document.observe('dom:loaded', function() {
     // 2) Remove Magento’s default Prototype handler (roleForm.submit())
     saveBtn.stopObserving('click');
 
-    // 3) Add our own click → prompt → submit logic
+    // 3) Attach our own click → prompt-for-ticket → native-submit logic
     saveBtn.observe('click', function(event) {
-        // If ticket-ID is disabled, just submit normally:
-        if ($('enabled_ticket_id') && $F('enabled_ticket_id') != '1') {
-            roleForm.submit();
+        // If ticket-ID feature is disabled, just do the original Prototype submit:
+        if ($('enabled_ticket_id') && $F('enabled_ticket_id') !== '1') {
+            // We still call the native element.submit() here,
+            // because the original onclick was “roleForm.submit(); return false;”
+            // and we want to replicate that exactly.
+            $('role_edit_form').submit();
             event.stop();
             return false;
         }
 
-        // If we don’t already have a non-empty ticket_id, prompt once:
-        var existingTid = $('ticket_id') ? $F('ticket_id') : '';
+        // If ticket_id is already set (non-empty), skip prompt
+        var existingTid = ($('ticket_id') ? $F('ticket_id') : '');
         if (!existingTid) {
+            // Prompt once
             var tid = prompt('Please enter ticket id');
             if (!tid) {
-                // Cancel or blank → do nothing, prevent submission
+                // Cancelled or blank → do nothing
                 event.stop();
                 return false;
             }
-            // Inject a hidden <input name="ticket_id" …> into the form
+            // Inject hidden <input id="ticket_id" name="ticket_id" value="…" />
             if (!$('ticket_id')) {
                 var hiddenField = new Element('input', {
                     type:  'hidden',
@@ -42,8 +46,8 @@ document.observe('dom:loaded', function() {
             }
         }
 
-        // Finally, call Prototype’s form.submit() (one validation pass only)
-        roleForm.submit();
+        // 4) Now call the *native* form.submit() (bypass Prototype.validate)
+        $('role_edit_form').submit();
         event.stop();
         return false;
     });
