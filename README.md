@@ -1,19 +1,18 @@
 <script type="text/javascript">
 //<![CDATA[
 document.observe('dom:loaded', function() {
-    // 1. Find the “Save Role” button by its CSS class:
-    //    it’s rendered by Magento as <button class="scalable save" …>
-    var saveBtn = $$('.scalable.save')[0];
+    // 1) Grab exactly the “Save Role” button by title + class
+    var saveBtn = $$('.scalable.save[title="Save Role"]')[0];
     if (!saveBtn) {
         return;
     }
 
-    // 2. Remove Prototype’s built-in click handler (roleForm.submit())
+    // 2) Remove Magento’s default Prototype handler (roleForm.submit())
     saveBtn.stopObserving('click');
 
-    // 3. Re-attach our own “click → prompt for ticket_id → submit” logic
+    // 3) Add our own click → prompt → submit logic
     saveBtn.observe('click', function(event) {
-        // If ticket-ID feature is disabled, just call Prototype’s original:
+        // If ticket-ID is disabled, just submit normally:
         if ($('enabled_ticket_id') && $F('enabled_ticket_id') != '1') {
             roleForm.submit();
             event.stop();
@@ -21,20 +20,20 @@ document.observe('dom:loaded', function() {
         }
 
         // If we don’t already have a non-empty ticket_id, prompt once:
-        var existingTid = ($('ticket_id') ? $F('ticket_id') : '');
+        var existingTid = $('ticket_id') ? $F('ticket_id') : '';
         if (!existingTid) {
             var tid = prompt('Please enter ticket id');
             if (!tid) {
-                // user clicked “Cancel” or left blank → do nothing
+                // Cancel or blank → do nothing, prevent submission
                 event.stop();
                 return false;
             }
-            // inject a hidden <input id="ticket_id" name="ticket_id" …>
+            // Inject a hidden <input name="ticket_id" …> into the form
             if (!$('ticket_id')) {
                 var hiddenField = new Element('input', {
-                    type: 'hidden',
-                    id:   'ticket_id',
-                    name: 'ticket_id',
+                    type:  'hidden',
+                    id:    'ticket_id',
+                    name:  'ticket_id',
                     value: tid
                 });
                 $('role_edit_form').insert({ bottom: hiddenField });
@@ -43,7 +42,7 @@ document.observe('dom:loaded', function() {
             }
         }
 
-        // Finally submit via Prototype’s varienForm (single validation pass):
+        // Finally, call Prototype’s form.submit() (one validation pass only)
         roleForm.submit();
         event.stop();
         return false;
