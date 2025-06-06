@@ -1,1 +1,4 @@
-SELECT * FROM core_config_data WHERE path LIKE 'payment/woohoopay/%';
+rm -rf var/cache/*
+rm -rf var/config/*
+rm -rf var/page_cache/*
+rm -rf var/session/*
