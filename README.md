@@ -1,4 +1,1 @@
-rm -rf var/cache/*
-rm -rf var/config/*
-rm -rf var/page_cache/*
-rm -rf var/session/*
+'showBalance' => Mage::getStoreConfigFlag("payment/{$paymentCode}/show_balance", $storeId),
