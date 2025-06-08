@@ -1,40 +1,64 @@
-public function toOptionArray()
+app/code/local/GBCustom/Cms/sql/cms_setup/mysql4-upgrade-1.6.0.0.6-1.6.0.0.7.php
+<?php
+/**
+ * Upgrade script: add `canonical_url` column to the `cms_block` table
+ * (from module version 1.6.0.0.6 → 1.6.0.0.7)
+ */
+$installer = $this;
+$installer->startSetup();
+
+$tableName  = $installer->getTable('cms/block');
+$connection = $installer->getConnection();
+
+// If the column doesn’t already exist, add it:
+if (! $connection->tableColumnExists($tableName, 'canonical_url')) {
+    $connection->addColumn(
+        $tableName,
+        'canonical_url',
+        [
+            'type'     => Varien_Db_Ddl_Table::TYPE_VARCHAR,
+            'length'   => 255,
+            'nullable' => true,
+            'comment'  => 'Canonical URL for CMS Block'
+        ]
+    );
+}
+
+$installer->endSetup();
+protected function getStaticBlock(string $id)
 {
-    // Always start with at least the “please select” option
-    $merchantList = [[
-        'value' => '',
-        'label' => Mage::helper('woohoopay')->__('Please select...')
-    ]];
+    $response = [];
+    $cacheKey = $this->getCommonHelper()->generateCacheKey(
+        $this->getVersion(),
+        self::CACHE_KEY,
+        [$this->_store->getStoreId(), $id]
+    );
 
-    try {
-        $merchants = Mage::helper('woohoorouter/router')->fetchMerchantList();
-    } catch (Exception $e) {
-        // Log what went wrong, but don’t break the save
-        Mage::logException($e);
-        return $merchantList;
+    if ($responseData = $this->loadCache($cacheKey)) {
+        return json_decode($responseData, true);
+    } else {
+        /** @var Mage_Cms_Model_Block $cmsBlockModel */
+        $cmsBlockModel = Mage::getModel('cms/block');
+        $block = $cmsBlockModel
+            ->setStoreId($this->_store->getStoreId())
+            ->load($id);
+
+        if ($block->getId() && $block->getIsActive()) {
+            $response['identifier'] = $id;
+            $response['title']      = $block->getTitle();
+            $response['content']    = $block->getContent();
+
+            // ← Here is the one minimal new line:
+            $response['canonical'] = ['url' => $block->getCanonicalUrl()];
+
+            $this->_saveCache(
+                json_encode($this->getFilter()->out($response)),
+                $cacheKey,
+                [$this->getTag()],
+                null
+            );
+        }
     }
 
-    // If we didn’t get an array, just return the placeholder
-    if (!is_array($merchants) || !isset($merchants['merchants']) || !is_array($merchants['merchants'])) {
-        Mage::log('WoohooPay Router: unexpected response from fetchMerchantList()', null, 'woohoopay.log');
-        return $merchantList;
-    }
-
-    // Build out the real list
-    foreach ($merchants['merchants'] as $merchant) {
-        $merchantList[] = [
-            'value' => $merchant['code'] ?? '',
-            'label' => $merchant['name'] ?? '',
-        ];
-    }
-
-    // If there are more than DEFAULT_LIMIT, merge in pages
-    if (!empty($merchants['total'])
-        && $merchants['total'] >= GBCustom_Microservice_Helper_Data::DEFAULT_LIMIT
-    ) {
-        $merchantList = Mage::helper('microservice/data')
-                           ->fetchAndMergeMerchants($merchantList);
-    }
-
-    return $merchantList;
+    return $response;
 }
