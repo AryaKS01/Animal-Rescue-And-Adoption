@@ -1,3 +1,4 @@
-SELECT scope, scope_id, path, value
-  FROM core_config_data
- WHERE path LIKE 'payment/%/show_%';
+'showBalance' => Mage::getStoreConfigFlag(
+    "payment/{$paymentCode}/show_balance",
+    $storeId
+),
