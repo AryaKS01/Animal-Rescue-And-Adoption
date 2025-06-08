@@ -1,18 +1,8 @@
-<?php
-/**
- * Upgrade script: add `canonical_url` column to the `cms_block` table
- * (module version 1.6.0.0.6 → 1.6.0.0.7)
- */
-
-$installer = $this;
-$installer->startSetup();
-
-$tableName = $installer->getTable('cms/block');
-
-// Raw SQL is more reliable across Magento 1.x versions
-$installer->run("
-    ALTER TABLE `{$tableName}`
-    ADD COLUMN `canonical_url` VARCHAR(255) NULL COMMENT 'Canonical URL for CMS Block';
-");
-
-$installer->endSetup();
+// Add “Canonical URL” text field
+    $fieldset->addField('canonical_url', 'text', array(
+        'name'     => 'canonical_url',
+        'label'    => Mage::helper('cms')->__('Canonical URL'),
+        'title'    => Mage::helper('cms')->__('Canonical URL'),
+        'required' => false,
+        'note'     => 'Optional: specify a custom canonical URL for this block.',
+    ));
