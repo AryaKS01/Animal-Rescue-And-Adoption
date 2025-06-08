@@ -1,1 +1,3 @@
-'showBalance' => Mage::getStoreConfigFlag("payment/{$paymentCode}/show_balance", $storeId),
+SELECT * 
+  FROM core_config_data 
+ WHERE path = 'payment/svc/show_balance';
