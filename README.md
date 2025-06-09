@@ -1,37 +1,39 @@
-<?php
-/**
- * Upgrade script: add `canonical_url` column to the `cms_block` table
- * (module version 1.6.0.0.6 → 1.6.0.0.7)
- *
- * CMPS QUERY
- *   ALTER TABLE cms_block
- *     ADD `canonical_url` VARCHAR(255) NULL COMMENT 'Canonical URL for CMS Block'
- *     ALGORITHM=INPLACE, LOCK=NONE;
- *
- * Roll back:
- *   ALTER TABLE cms_block
- *     DROP COLUMN `canonical_url`
- *     ALGORITHM=INPLACE, LOCK=NONE;
- */
+In a Jira ticket, the Impact Areas section should clearly state what parts of the system are affected by the code change, and what needs to be tested. Since you've added a new flag under the SVC Payment Method (ShowBalance on checkout), you should mention:
 
-$installer = $this;
-$installer->startSetup();
+1. Where the change is made (e.g., admin configuration).
 
-$tableName  = $installer->getTable('cms/block');  // resolves to `cms_block`
-$connection = $installer->getConnection();
 
-// Only add if it doesn’t already exist
-if (! $connection->tableColumnExists($tableName, 'canonical_url')) {
-    $connection->addColumn(
-        $tableName,
-        'canonical_url',
-        [
-            'type'     => Varien_Db_Ddl_Table::TYPE_VARCHAR,
-            'length'   => 255,
-            'nullable' => true,
-            'comment'  => 'Canonical URL for CMS Block'
-        ]
-    );
-}
+2. What functionality is affected (e.g., checkout process visibility).
 
-$installer->endSetup();
+
+3. What conditions QA should validate.
+
+
+
+Here's a clean and professional way to write the Impact Areas section for your use case:
+
+
+---
+
+🛠️ Impact Areas
+
+SVC Payment Method Configuration
+A new flag ShowBalance on checkout has been added under System > Configuration > Sales > Payment Methods > SVC Payment Method.
+
+Checkout Page Behavior
+The visibility of balance on the checkout page is now conditional based on the new flag.
+
+QA Validation Required:
+
+Validate both scenarios with the ShowBalance flag enabled and disabled.
+
+Test with CorpAdmin user enabled and disabled to ensure correct visibility behavior.
+
+Ensure the value is returned correctly in both Settings API and Payments API.
+
+
+
+
+---
+
+Let me know if you'd like to include references to specific file paths or APIs as well.
