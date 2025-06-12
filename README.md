@@ -1,7 +1,8 @@
 public function cancelAction()
 {
     $orderId = $this->getRequest()->getParam('order_id');
-    // 1) ticket-id mandatory check
+
+    // 1) Exactly the same mandatory-ticket logic as reverseAction()
     if (
         !$this->getRequest()->getParam('ticket_id')
         && Mage::getSingleton('admin/session')->isAllowed('enabled_ticket_id')
@@ -13,66 +14,37 @@ public function cancelAction()
         return;
     }
 
-    // 2) call your microservice-logging helper
+    // 2) Pull in the ticket (you already append it via JS)
     $ticketId = $this->getRequest()->getParam('ticket_id');
-    if ($ticketId) {
-        try {
-            Mage::helper('carddetails') // or your microservice helper alias
-                ->logTicketToService($orderId, $ticketId);
-        } catch (Exception $e) {
-            Mage::logException($e);
-            $this->_getSession()->addError(
-                Mage::helper('sales')->__('Could not send ticket to logging service.')
-            );
-            // (you could choose to bail here or continue)
+
+    try {
+        /** @var Mage_Sales_Model_Order $order */
+        $order = $this->_initOrder();
+
+        // 3) Mirror your corporate “reverse” flow, but call initiateCancel()
+        if ($order->getIsViaWcard() || $order->getIsViaWpay()) {
+            // this is exactly parallel to reverseAction’s initiateReverse()
+            Mage::getModel('corpadmin/sales_order')->initiateCancel($order);
+        } else {
+            // if you have a carddetails helper for non-corporate, call it here:
+            Mage::helper('carddetails')->cancelWoohooRulesOrder($order);
         }
+
+        // 4) Then let Magento do its normal cancel()
+        $order->cancel();
+        $order->save();
+
+        $this->_getSession()->addSuccess(
+            Mage::helper('sales')->__('The order has been cancelled.')
+        );
+    } catch (Mage_Core_Exception $e) {
+        $this->_getSession()->addError($e->getMessage());
+    } catch (Exception $e) {
+        Mage::logException($e);
+        $this->_getSession()->addError(
+            Mage::helper('sales')->__('The order has not been cancelled.')
+        );
     }
 
-    // 3) your existing “pre-cancel” checks:
-    $isCreditMemoMonitorCompleted   = Mage::helper('carddetails')
-                                          ->isCreditMemoMonitorCompleted($orderId);
-    $isPaymentVerificationCompleted = Mage::helper('payment')
-                                          ->isPaymentVerificationCompleted($orderId);
-    if (!$isCreditMemoMonitorCompleted || !$isPaymentVerificationCompleted) {
-        $errormsg = !$isCreditMemoMonitorCompleted
-            ? 'Manual action is not allowed as auto cancellation process is already going on.'
-            : 'Manual action is not allowed as Payment Verification process is going on.';
-        $this->_getSession()->addError($this->__( $errormsg ));
-        $this->_redirect('*/*/view', ['order_id' => $orderId]);
-        return;
-    }
-
-    // 4) your core cancellation flow
-    if ($order = $this->_initOrder()) {
-        try {
-            Mage::log('Cancellation process started for order number :' . $orderId);
-            $order->addStatusHistoryComment('Cancellation process started.', 
-                                            GBCustom_Sales_Model_Order::STATUS_CANCELED);
-
-            // ... your woohoo / wpay / carddetails cancel calls here ...
-
-            $order->cancel();
-            $order->setState(
-                GBCustom_Sales_Model_Order::STATE_CANCELED,
-                $order->getStatus(),
-                'Order is cancelled.'
-            );
-            $order->setCancellationFlow(
-                GBCustom_Carddetails_Helper_Data::CANCELLATION_FLOW_BUSINESS
-            );
-            $order->save();
-
-            $this->_getSession()->addSuccess(
-                Mage::helper('sales')->__('The order has been cancelled.')
-            );
-        } catch (Mage_Core_Exception $e) {
-            $this->_getSession()->addError($e->getMessage());
-        } catch (Exception $e) {
-            $this->_getSession()->addError(
-                $this->__('The order has not been cancelled.')
-            );
-            Mage::logException($e);
-        }
-    }
     $this->_redirect('*/*/view', ['order_id' => $orderId]);
 }
