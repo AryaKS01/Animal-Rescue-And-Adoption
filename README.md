@@ -1,7 +1,6 @@
-INSERT INTO core_config_data (scope, scope_id, path, value)
-VALUES ('default', 0, 'dev/debug/template_hints', 1)
-ON DUPLICATE KEY UPDATE value = 1;
- 
-INSERT INTO core_config_data (scope, scope_id, path, value)
-VALUES ('default', 0, 'dev/debug/template_hints_blocks', 1)
-ON DUPLICATE KEY UPDATE value = 1;
+UPDATE core_config_data
+SET value = 0
+WHERE scope = 'default' AND scope_id = 0 AND path IN (
+    'dev/debug/template_hints',
+    'dev/debug/template_hints_blocks'
+);
