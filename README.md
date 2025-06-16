@@ -1,15 +1,9 @@
-<script type="text/javascript">
-jQuery(document).ready(function() {
-    <?php if (Mage::getSingleton('admin/session')->isAllowed('enabled_ticket_id')): ?>
-        if (!jQuery('#ticket_id').length) {
-            jQuery('#edit_form').prepend(
-                '<input type="hidden" '
-              + 'id="ticket_id" '
-              + 'name="ticket_id" '
-              + 'class="validate-ticket" '
-              + 'value="" />'
-            );
-        }
-    <?php endif; ?>
-});
-</script>
+// under the existing meta_index field
+$fieldset->addField('canonical_url', 'text', array(
+    'name'     => 'canonical_url',
+    'label'    => Mage::helper('cms')->__('Canonical URL'),
+    'title'    => Mage::helper('cms')->__('Canonical URL'),
+    'disabled' => $isElementDisabled,
+    'value'    => $model->getCanonicalUrl(),
+    'note'     => Mage::helper('cms')->__('Full URL that you’d like search engines to index.'),
+));
