@@ -1,9 +1,22 @@
-// under the existing meta_index field
-$fieldset->addField('canonical_url', 'text', array(
-    'name'     => 'canonical_url',
-    'label'    => Mage::helper('cms')->__('Canonical URL'),
-    'title'    => Mage::helper('cms')->__('Canonical URL'),
-    'disabled' => $isElementDisabled,
-    'value'    => $model->getCanonicalUrl(),
-    'note'     => Mage::helper('cms')->__('Full URL that you’d like search engines to index.'),
-));
+/**
+ * Add canonical_url to cms_page
+ *
+ * CMPS QUERY:
+ * ALTER TABLE cms_page
+ *   ADD `canonical_url` VARCHAR(255) NULL COMMENT 'Canonical URL',
+ *   ALGORITHM=INPLACE, LOCK=NONE;
+ *
+ * Roll back:
+ * ALTER TABLE cms_page DROP COLUMN `canonical_url`, ALGORITHM=INPLACE, LOCK=NONE;
+ */
+$connection->addColumn(
+    $tableName,
+    'canonical_url',
+    [
+        'type'     => Varien_Db_Ddl_Table::TYPE_TEXT,
+        'length'   => 255,
+        'nullable' => true,
+        'default'  => null,
+        'comment'  => 'Canonical URL'
+    ]
+);
