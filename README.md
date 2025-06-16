@@ -19,4 +19,9 @@ $connection->addColumn(
         'default'  => null,
         'comment'  => 'Canonical URL'
     ]
+
 );
+
+SELECT code, version, data_version
+  FROM core_resource
+ WHERE code = 'cms_setup';
