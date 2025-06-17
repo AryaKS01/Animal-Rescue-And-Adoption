@@ -1,27 +1,11 @@
-/**
- * Add canonical_url to cms_page
- *
- * CMPS QUERY:
- * ALTER TABLE cms_page
- *   ADD `canonical_url` VARCHAR(255) NULL COMMENT 'Canonical URL',
- *   ALGORITHM=INPLACE, LOCK=NONE;
- *
- * Roll back:
- * ALTER TABLE cms_page DROP COLUMN `canonical_url`, ALGORITHM=INPLACE, LOCK=NONE;
- */
-$connection->addColumn(
-    $tableName,
-    'canonical_url',
-    [
-        'type'     => Varien_Db_Ddl_Table::TYPE_TEXT,
-        'length'   => 255,
-        'nullable' => true,
-        'default'  => null,
-        'comment'  => 'Canonical URL'
-    ]
+# 1. Make sure you’ve fetched the latest from origin
+git fetch origin
 
-);
+# 2. Check out the release branch
+git checkout release/v7.3.0
 
-SELECT code, version, data_version
-  FROM core_resource
- WHERE code = 'cms_setup';
+# 3. (Optional) Ensure it’s up to date
+git pull origin release/v7.3.0
+
+# 4. Create and switch to your new feature branch
+git checkout -b feature/B2B-25473/oac-doc-update-for-product-category-product
