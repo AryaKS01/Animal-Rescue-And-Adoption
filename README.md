@@ -1,11 +1,27 @@
-# Temporarily save your current changes
-git stash push -m "WIP: composer edits"
-
-# Now switch to the release branch
-git checkout release/v7.3.0
-
-# Create your new feature branch
-git checkout -b feature/B2B-25473/oac-doc-update-for-product-category-product
-
-# (Optional) Bring your stashed changes back if needed
-git stash pop
+@OA\Property(
+    property="redemption_rules",
+    description="List of corporate discount or redemption rules applicable for this product",
+    type="array",
+    @OA\Items(
+        type="object",
+        @OA\Property(
+            property="type",
+            description="Type of discount or redemption rule. Possible values: percentage, fixed.",
+            type="string",
+            example="percentage"
+        ),
+        @OA\Property(
+            property="amount",
+            description="Amount of the discount or redemption. For percentage type, it is a percentage value.",
+            type="number",
+            format="float",
+            example=2
+        ),
+        @OA\Property(
+            property="groupCode",
+            description="Code representing the discount or loyalty group, e.g., WoohooCoins.",
+            type="string",
+            example="WoohooCoins"
+        )
+    )
+),
